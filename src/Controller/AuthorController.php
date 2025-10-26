@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+
 final class AuthorController extends AbstractController
 {
     #[Route('/author', name: 'app_author')]
@@ -39,10 +40,11 @@ final class AuthorController extends AbstractController
       $author=new Author();
       $author->setEmail('foulen@esprit.tn');
       $author->setUsername('foulen');
+      
+      //return new Response("Author added suceesfully");
       $em=$doctrine->getManager();
       $em->persist($author);
       $em->flush();
-      //return new Response("Author added suceesfully");
       return $this->redirectToRoute('showAll');
     }
 
@@ -79,5 +81,19 @@ final class AuthorController extends AbstractController
     public function showDetails($id,AuthorRepository $repo){
        $author=$repo->find($id);
        return $this->render('author/showDetails.html.twig',['author'=>$author]);
+    }
+
+    #[Route('/ShowAllAuthorsQB',name:'ShowAllAuthorsQB')]
+    public function ShowAllAuthorsQB(AuthorRepository $repo){
+        $authors=$repo->ShowAllAuthorsQB();
+        return $this->render('author/showAll.html.twig',
+        ['list'=>$authors]);
+    }
+
+    #[Route('/ShowAllAuthorsDQL',name:'ShowAllAuthorsDQL')]
+    public function ShowAllAuthorsDQL(AuthorRepository $repo){
+        $authors=$repo->ShowAllAuthorsDQL();
+        return $this->render('author/showAll.html.twig',
+        ['list'=>$authors]);
     }
 }
